@@ -1,0 +1,14 @@
+{
+  "name": "svyat-wordle",
+  "version": "1.0.0",
+  "description": "My own version of the famous Wordle game",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Svyat",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^9.8.2"
+  }
+}
