@@ -1,7 +1,9 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import * as firebase from "firebase/app";
+import { getDatabase, ref, child, get } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
+import { game } from "./src/game";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -15,4 +17,17 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+
+const dbRef = ref(getDatabase());
+
+get(child(dbRef, '/')).then((snapshot) => {
+    if (snapshot.exists()) {
+        return snapshot.val();
+    } else {
+        console.log("No data available");
+    }
+}).then((words) => game(words)).catch((error) => {
+    console.error(error);
+});
+

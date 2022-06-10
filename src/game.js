@@ -5,11 +5,13 @@ const keyboard = document.querySelector('.keyboard');
 const popup = document.querySelector('.popup');
 const popupContent = document.querySelector('.popup__content');
 
+let words;
 let word;
 let currentWord;
 let turn;
 
-function game() {
+export function game(wordList) {
+    words = wordList;
     newGame();
     
     newGameButton.addEventListener('click', newGame);
@@ -126,5 +128,3 @@ function checkLetters() {
         currentRow[index].classList.add(`board__cell_${cellModificator}`);
     });
 }
-
-game();
