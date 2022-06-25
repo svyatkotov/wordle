@@ -19,15 +19,4 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-const dbRef = ref(getDatabase());
-
-get(child(dbRef, '/')).then((snapshot) => {
-    if (snapshot.exists()) {
-        return snapshot.val();
-    } else {
-        console.log("No data available");
-    }
-}).then((words) => game(words)).catch((error) => {
-    console.error(error);
-});
-
+game();

@@ -34,6 +34,7 @@
 
 .header {
     font-size: 30px;
+    font-weight: 700;
 }
 
 .board {
@@ -72,7 +73,7 @@
     background-color: grey;
 }
 
-.new-game {
+.new-game-button {
     display: none;
     padding: 8px;
     font-family: inherit;
@@ -83,7 +84,7 @@
     cursor: pointer;
 }
 
-.new-game_visible {
+.new-game-button_visible {
     display: block;
 }
 
@@ -107,6 +108,23 @@
     min-width: 40px;
     border-radius: 5px;
     background-color: lightgrey;
+    font-size: 16px;
     cursor: pointer;
     user-select: none;
+}
+
+@media only screen and (max-width: 600px) {
+    .keyboard {
+        row-gap: 3px;
+    }
+    
+    .keyboard__row {
+        column-gap: 3px;
+    }
+    
+    .keyboard__key {
+        padding: 18px 3px;
+        min-width: 25px;
+        font-size: 14px;
+    }
 }

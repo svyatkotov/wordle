@@ -1,60 +1,62 @@
 const cells = document.querySelectorAll('.board__cell');
 const rows = document.querySelectorAll('.board__row');
-const newGameButton = document.querySelector('.new-game');
+const newGameButton = document.querySelector('.new-game-button');
 const keyboard = document.querySelector('.keyboard');
 const popup = document.querySelector('.popup');
 const popupContent = document.querySelector('.popup__content');
 
-let words;
 let word;
 let currentWord;
 let turn;
+let disableInput;
 
-export function game(wordList) {
-    words = wordList;
-    newGame();
+export async function game() {
+    await newGame();
     
     newGameButton.addEventListener('click', newGame);
-
-    window.addEventListener('keydown', (({ key }) => handleKeyInput(key)));
-
-    keyboard.addEventListener('click', ({ target: { classList, textContent } }) => {
-        if (classList.contains('keyboard__key_letter')) {
-            handleLetterInput(textContent);
-        }
-
-        if (classList.contains('keyboard__key_remove')) {
-            handleRemoveLetter();
-        }
-
-        if (classList.contains('keyboard__key_enter')) {
-            handleEnter();
-        }
-    });
+    window.addEventListener('keydown', handleKeyInput);
+    keyboard.addEventListener('click', handleKeyboardClick);
 }
 
-function newGame() {
-    word = getWord();
-    currentWord = [];
-    turn = 0;
+async function newGame() {
     cells.forEach(cell => {
         cell.textContent = '';
         cell.classList.remove('board__cell_correct');
         cell.classList.remove('board__cell_has');
         cell.classList.remove('board__cell_wrong');
     });
-    newGameButton.classList.remove('new-game_visible');
+    newGameButton.classList.remove('new-game-button_visible');
     popup.classList.remove('popup_visible');
+
+    word = await getWord();
+    currentWord = [];
+    turn = 0;
+    disableInput = false;
 }
 
-function getWord() {
-    const filteredWords = words.filter(word => word.length === 5 && word.match(/^[а-я]/));
-    const randomIndex = Math.floor(Math.random() * filteredWords.length) - 1;
+async function getWord() {
+    const res = await fetch('https://us-central1-svyat-wordle.cloudfunctions.net/getWord');
+    const word = await res.text();
+    console.log("🚀 ~ file: game.js ~ line 52 ~ getWord ~ word", word)
 
-    return filteredWords.at(randomIndex).toUpperCase();
+    return word;
 }
 
-function handleKeyInput(key) {
+function handleKeyboardClick({ target: { classList, textContent } }) {
+    if (classList.contains('keyboard__key_remove')) {
+        handleRemoveLetter();
+    }
+
+    if (classList.contains('keyboard__key_enter')) {
+        handleEnter();
+    }
+
+    if (classList.contains('keyboard__key_letter')) {
+        handleLetterInput(textContent);
+    }
+}
+
+function handleKeyInput({ key }) {
     switch (key) {
         case 'Backspace':
             handleRemoveLetter();
@@ -75,7 +77,7 @@ function handleLetterInput(letter) {
 }
 
 function handleRemoveLetter() {
-    if (currentWord.length > 0 && !newGameButton.classList.contains('new-game_visible')) {
+    if (currentWord.length > 0 && !disableInput) {
         currentWord.pop();
         updateRow();
     }
@@ -87,19 +89,23 @@ function updateRow() {
 }
 
 function handleEnter() {
-    if (currentWord.length === 5 && !newGameButton.classList.contains('new-game_visible')) {
-        if (!words.includes(currentWord.join('').toLowerCase())) {
+    if (currentWord.length === 5 && !disableInput) {
+        if (false) {
             showNonExistencePopup();
             return;
         }
 
         checkLetters();
 
-        if (currentWord.join('') !== word && turn !== 5) {
+        const isRightWord = currentWord.join('') === word;
+
+        if (isRightWord) {
+            showEndGamePopup('Правильно! Отгадаешь еще слово?');
+        } else if (!isRightWord && turn === 5) {
+            showEndGamePopup(`Это было слово ${word}. Отгадаешь еще слово?`);
+        } else {
             currentWord = [];
             turn++;
-        } else {
-            showWinPopup();
         }
     }
 }
@@ -111,10 +117,11 @@ function showNonExistencePopup() {
     setTimeout(() => popup.classList.remove('popup_visible'), 2000);
 }
 
-function showWinPopup() {
-    popupContent.textContent = 'Правильно! Отгадаешь еще слово?';
+function showEndGamePopup(text) { 
+    popupContent.textContent = text;
     popup.classList.add('popup_visible');
-    newGameButton.classList.add('new-game_visible');
+    newGameButton.classList.add('new-game-button_visible');
+    disableInput = true;
 }
 
 function checkLetters() {
