@@ -5,15 +5,17 @@ module.exports = {
         node: true,
     },
     extends: [
-        "eslint:recommended",
-        "google",
+        'eslint:recommended',
+        'google',
     ],
     rules: {
-        "quotes": ["error", "double"],
-        "indent": ["error", 4],
-        "object-curly-spacing": [2, "always"],
+        'quotes': ['error', 'single'],
+        'indent': ['error', 4],
+        'object-curly-spacing': [2, 'always'],
+        'max-len': ['error', { 'code': 150 }],
+        'require-jsdoc': 0,
     },
     parserOptions: {
-        "sourceType": "module",
+        'sourceType': 'module',
     },
 };
