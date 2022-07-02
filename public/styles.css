@@ -6,6 +6,7 @@
 
 a {
     color: deepskyblue;
+    text-decoration: none;
 }
 
 .root {
@@ -33,12 +34,28 @@ a {
     visibility: hidden;
 }
 
+.popup_visible {
+    visibility: visible;
+}
+
 .popup__content {
     text-align: center;
 }
 
-.popup_visible {
-    visibility: visible;
+.popup__new-game-button {
+    display: none;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 20px;
+    color: black;
+    background-color: rgb(24, 180, 24);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup__new-game-button_visible {
+    display: block;
 }
 
 .header {
@@ -66,7 +83,7 @@ a {
     height: 60px;
     border: 2px solid grey;
     font-size: 40px;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1;
     user-select: none;
 }
@@ -81,21 +98,6 @@ a {
 
 .board__cell_wrong {
     background-color: grey;
-}
-
-.new-game-button {
-    display: none;
-    padding: 8px;
-    font-family: inherit;
-    font-size: 20px;
-    background-color: rgb(24, 180, 24);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.new-game-button_visible {
-    display: block;
 }
 
 .keyboard {

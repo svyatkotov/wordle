@@ -1,6 +1,6 @@
 const cells = document.querySelectorAll('.board__cell');
 const rows = document.querySelectorAll('.board__row');
-const newGameButton = document.querySelector('.new-game-button');
+const newGameButton = document.querySelector('.popup__new-game-button');
 const keyboard = document.querySelector('.keyboard');
 const keyboardKeys = document.querySelectorAll('.keyboard__key');
 const popup = document.querySelector('.popup');
@@ -20,7 +20,7 @@ export async function game() {
 }
 
 async function newGame() {
-    newGameButton.classList.remove('new-game-button_visible');
+    newGameButton.classList.remove('popup__new-game-button_visible');
     popup.classList.remove('popup_visible');
     cells.forEach(cell => {
         cell.textContent = '';
@@ -96,7 +96,7 @@ async function handleEnter() {
         const isRightWord = currentWord.join('') === word;
 
         if (isRightWord) {
-            showEndGamePopup('Правильно! Отгадаешь еще слово?');
+            showEndGamePopup(`Правильно! Это слово ${getWikiLink(word)}. Отгадаешь еще слово?`);
             updateGameboard();
             return;
         }
@@ -105,7 +105,7 @@ async function handleEnter() {
         const isWordExist = await getIsWordExist();
         disableInput = false;
 
-        if (isWordExist === 'false') {
+        if (!isWordExist) {
             showNonExistencePopup();
             return;
         }
@@ -113,7 +113,7 @@ async function handleEnter() {
         updateGameboardAndKeyboard();
 
         if (!isRightWord && turn === 5) {
-            showEndGamePopup(`Это было слово <a target="_blank" href="https://ru.wiktionary.org/wiki/${word}#Значение">${word}</a>. Отгадаешь еще слово?`);
+            showEndGamePopup(`Это было слово ${getWikiLink(word)}. Отгадаешь еще слово?`);
         } else {
             currentWord = [];
             turn++;
@@ -125,13 +125,13 @@ async function getIsWordExist() {
     const res = await fetch(`https://us-central1-svyat-wordle.cloudfunctions.net/checkExistence?word=${currentWord.join('')}`);
     const isWordExist = await res.text();
 
-    return isWordExist;
+    return isWordExist === 'true';
 }
 
 function showEndGamePopup(content) {
     popupContent.innerHTML = content;
     popup.classList.add('popup_visible');
-    newGameButton.classList.add('new-game-button_visible');
+    newGameButton.classList.add('popup__new-game-button_visible');
     disableInput = true;
 }
 
@@ -174,4 +174,8 @@ function updateKeyboard() {
             key.classList.add('keyboard__key_wrong');
         }
     });
+}
+
+function getWikiLink(word) {
+    return `<a target="_blank" href="https://ru.wiktionary.org/wiki/${word}#Значение">${word}</a>`;
 }
