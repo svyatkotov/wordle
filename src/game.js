@@ -13,7 +13,7 @@ let disableInput;
 
 export async function game() {
     await newGame();
-    
+
     newGameButton.addEventListener('click', newGame);
     window.addEventListener('keydown', handleKeyInput);
     keyboard.addEventListener('click', handleKeyboardClick);
